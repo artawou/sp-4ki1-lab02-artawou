@@ -1,0 +1,12 @@
+schema: "classroom50/repo-config/v1"
+classroom: "sp-4ki1"
+assignment: "lab02"
+owner:
+  username: "artawou"
+  id: 334616584
+  accepted_at: "2026-10-09T20:02:26Z"
+source:
+  owner: "alex-ordynski"
+  owner_id: 226266490
+  repo: "sp-lab02-template"
+  branch: "main"
