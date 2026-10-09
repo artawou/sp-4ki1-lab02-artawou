@@ -1,0 +1,52 @@
+{
+  // ЗГЕНЕРОВАНО з content/sp/environment/lab02.yml — E11-9, ADR 022.
+  // Правки в цьому файлі перезаписуються наступним прогоном генератора:
+  // змінювати треба середовище в матеріалах, а не копію тут.
+
+  "name": "ЛР2 · Dockerfile з багатоетапною збіркою і порівнянням розмірів",
+
+  // Базовий образ devcontainers, а НЕ `ubuntu:24.04` з environment-файла.
+  // У голому образі дистрибутива немає ані sudo, ані користувача, ані передумов, яких
+  // потребує фіча docker-in-docker. `container.image` — це образ НАВЧАЛЬНИХ контейнерів,
+  // які студент піднімає всередині простору, а не образ самого простору.
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  // Docker Engine усередині простору — цього вимагає `docker: engine` в environment-файлі,
+  // і без нього роботи про контейнери не виконуються взагалі.
+  //
+  // `privileged: true` з того ж файла НЕ перетворюється на `--privileged` у runArgs:
+  // Codespaces такий прапорець забороняють, і простір просто не створюється — студент
+  // бачить «щось пішло не так» і не має де працювати. Демон піднімає сама фіча, штатним
+  // для Codespaces шляхом. Перевірено на живому просторі 17.09.2026.
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "containerEnv": {
+    "DEBIAN_FRONTEND": "noninteractive",
+    "DOCKER_BUILDKIT": "1"
+  },
+
+  // Ставить утиліти з `tools` і садить пасхалку. Скрипт НІКОЛИ не завершується помилкою:
+  // postCreateCommand, що впав, ламає створення простору. Перевірку середовища запускає
+  // сам студент — `bash .devcontainer/verify.sh`.
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // `container.resources` — мінімальна машина, на якій ця робота має сенс.
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "timonwong.shellcheck"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+
+}
