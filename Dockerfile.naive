@@ -1,0 +1,9 @@
+FROM fedora:40
+
+WORKDIR /app
+RUN dnf install -y cargo && dnf clean all
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+RUN cargo build --release
+
+CMD ["./target/release/vtfk-sid"]
